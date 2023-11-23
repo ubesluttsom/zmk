@@ -131,7 +131,14 @@ jobs:
             cp "build/zephyr/zmk.${{ inputs.fallback_binary }}" "build/artifacts/${{ env.artifact_name }}.${{ inputs.fallback_binary }}"
           fi
 
+      - name: Copy Artifacts if Running Locally
+        if: github.server_url != 'https://github.com'
+        run: |
+          mkdir -p ${{ github.workspace }}/artifacts
+          cp -r build/artifacts/* ${{ github.workspace }}/artifacts/
+      
       - name: Archive (${{ env.display_name }})
+        if: github.server_url == 'https://github.com'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.archive_name }}
